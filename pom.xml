@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Spring Boot 4.2.0: the current stable release (Nov 2026). It needs Java 17 or newer; we use Java 21.
+         The older 3.5 line is no longer supported since June 2026. See README.md, "Versions". -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.2.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.classchat</groupId>
+    <artifactId>classchat</artifactId>
+    <version>1.0.0</version>
+    <name>ClassChat</name>
+    <description>A small real-time chat room with Spring Boot, WebSocket and STOMP</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <!-- The STOMP JavaScript library used by the browser (served from this same application). -->
+        <stompjs.version>7.3.0</stompjs.version>
+    </properties>
+
+    <dependencies>
+        <!-- HTTP server (embedded Tomcat), serves the website in src/main/resources/static -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+        <!-- WebSocket + STOMP messaging -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <!-- The browser's STOMP client, packaged inside our JAR, so the app works without internet.
+             If you change this version, also change the path in static/index.html. -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>stomp__stompjs</artifactId>
+            <version>${stompjs.version}</version>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- The executable JAR will be called target/classchat.jar -->
+        <finalName>classchat</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

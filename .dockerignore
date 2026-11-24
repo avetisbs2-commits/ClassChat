@@ -1,0 +1,13 @@
+# Files that Docker must NOT send to the build (smaller, faster, no secrets)
+target/
+.git/
+.gitignore
+.idea/
+.vscode/
+*.iml
+*.md
+Dockerfile
+.dockerignore
+mvnw
+mvnw.cmd
+.mvn/
