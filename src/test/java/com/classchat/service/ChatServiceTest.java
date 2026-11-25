@@ -1,13 +1,13 @@
 package com.classchat.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.classchat.dto.ChatMessage;
 import com.classchat.dto.ChatRequest;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for ChatService. No Spring and no WebSocket here: ChatService is a normal Java class,
@@ -44,4 +44,84 @@ class ChatServiceTest {
     //   Bonus: check the text of the exception with assertEquals(..., exception.getMessage()).
     //   Run them with:  ./mvnw test
     //   Tests of invalid messages fail until TODO 2 is done: that is normal. Write the test first, then the code.
-}
+
+        @Test
+        void messageHasCorrectTimestamp() {
+            ChatMessage result =
+                    chatService.process(new ChatRequest("Ana", "Hello!"));
+
+            assertEquals(NOW, result.timestamp());
+        }
+
+        @Test
+        void accepts30CharacterNickname() {
+            String nickname = "a".repeat(30);
+
+            ChatMessage result =
+                    chatService.process(new ChatRequest(nickname, "Hello!"));
+
+            assertEquals(nickname, result.sender());
+        }
+
+        @Test
+        void accepts500CharacterMessage() {
+            String content = "a".repeat(500);
+
+            ChatMessage result =
+                    chatService.process(new ChatRequest("Ana", content));
+
+            assertEquals(content, result.content());
+        }
+
+        @Test
+        void rejectsEmptyNickname() {
+            assertThrows(InvalidMessageException.class,
+                    () -> chatService.process(new ChatRequest("", "Hello!")));
+        }
+
+        @Test
+        void rejectsBlankNickname() {
+            assertThrows(InvalidMessageException.class,
+                    () -> chatService.process(new ChatRequest("   ", "Hello!")));
+        }
+
+        @Test
+        void rejectsNullNickname() {
+            assertThrows(InvalidMessageException.class,
+                    () -> chatService.process(new ChatRequest(null, "Hello!")));
+        }
+
+        @Test
+        void rejectsLongNickname() {
+            String nickname = "a".repeat(31);
+
+            assertThrows(InvalidMessageException.class,
+                    () -> chatService.process(new ChatRequest(nickname, "Hello!")));
+        }
+
+        @Test
+        void rejectsEmptyMessage() {
+            assertThrows(InvalidMessageException.class,
+                    () -> chatService.process(new ChatRequest("Ana", "")));
+        }
+
+        @Test
+        void rejectsBlankMessage() {
+            assertThrows(InvalidMessageException.class,
+                    () -> chatService.process(new ChatRequest("Ana", "   ")));
+        }
+
+        @Test
+        void rejectsNullMessage() {
+            assertThrows(InvalidMessageException.class,
+                    () -> chatService.process(new ChatRequest("Ana", null)));
+        }
+
+        @Test
+        void rejectsLongMessage() {
+            String content = "a".repeat(501);
+
+            assertThrows(InvalidMessageException.class,
+                    () -> chatService.process(new ChatRequest("Ana", content)));
+        }
+    }

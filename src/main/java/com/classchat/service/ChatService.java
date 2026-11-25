@@ -35,7 +35,7 @@ public class ChatService {
         // TODO 3: The starter sends NO time (null), so the browser shows "--:--:--".
         //         Create the timestamp HERE, on the server: use the injected clock (clock.instant()).
         //         Do not trust a time from the browser.
-        Instant timestamp = null;
+        Instant timestamp = clock.instant();
 
         return new ChatMessage(request.sender(), request.content(), timestamp);
     }
@@ -49,5 +49,14 @@ public class ChatService {
         //           - the message is longer than MAX_MESSAGE_LENGTH (500) characters.
         //         Hints: String.isBlank(); remember that a field can be null.
         //         The controller already sends your exception text to the user who made the mistake.
+        if (    request.sender() == null ||
+                request.sender().isBlank() ||
+                request.sender().length() > MAX_NICKNAME_LENGTH ||
+                request.content() == null ||
+                request.content().isBlank() ||
+                request.content().length() > MAX_MESSAGE_LENGTH
+        ){
+            throw new InvalidMessageException("Invalid");
+        }
     }
 }

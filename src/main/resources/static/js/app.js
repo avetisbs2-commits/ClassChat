@@ -121,7 +121,15 @@ function sendMessage(event) {
 //   3. Call it every time the user types: add a listener for the "input" event of els.messageInput.
 //      It is also already called after a message is sent, to reset the counter.
 function updateCounter() {
-    // Starter: the counter stays empty.
+    const length = els.messageInput.value.length;
+
+    els.counter.textContent = `${length} / ${MAX_MESSAGE_LENGTH}`;
+
+    if (length > MAX_MESSAGE_LENGTH) {
+        els.counter.classList.add("counter--over");
+    } else {
+        els.counter.classList.remove("counter--over");
+    }
 }
 
 // ---------- Showing messages (always as TEXT, never as HTML) ----------
@@ -199,3 +207,6 @@ els.connectForm.addEventListener("submit", connect);
 els.disconnectBtn.addEventListener("click", disconnect);
 els.messageForm.addEventListener("submit", sendMessage);
 setStatus("disconnected");
+
+els.messageInput.addEventListener("input", updateCounter);
+updateCounter();
